@@ -1,26 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheeet" href="style.css">
-    <title>Fale Conosco</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Perguntas e respostas</title>
 </head>
 <body>
-    <div class="box-question">
-        <div class="header">
-            <h1>Fale Conosco</h1>
-        </div>
-        <p id="status"></p>
-        <div id="historic">
-            <!-- Aqui ira o chat -->
-        </div>
-        <div class="footer">
-            <input type="text" placeholder="Pergunte aqui..." id="message-input">
-            <button id="btn-submit">Enviar</button>
-        </div>
+  <div class="box-questions">
+    <div class="header">
+      <p>Fale Conosco</p>
     </div>
+    <p id="status"></p>
+    <div id="history">
+      <!-- Aqui vai o chat gerado conforme as respostas -->
+    </div>
+    <div class="footer">
+      <input type="text" id="mensagem" class="Pergunte aqui...">
+      <button class="botao_enviar" onclick="Enviar();">Enviar</button>
+    </div>
+  </div>
 </body>
-<script src="main.js"></script>
+
+<script>
+
+    topico = "senai/VC_faleconosco2";  // Variável que ficará no servidor MQTT
+  
+    // Conexão:
+    client = new Paho.MQTT.Client("broker.hivemq.com", Number(8000), "");
+  
+    // Funções executadas quando a conexão é perdida e quando uma mensagem chega:
+    client.onConnectionLost = ConexaoPerdida;
+    client.onMessageArrived = MensagemRecebida;
+  
+    // Função chamada quando a conexão for realizada:
+    client.connect({onSuccess:Conectar});
+  
+    // A função Conectar deve criar a variável (tópico) no computador remoto:
+    function Conectar() {
+      
+      client.subscribe(topico);  // Tópico (variável) criado no servidor MQTT
+      
+    }
+    
+    function ConexaoPerdida(responseObject) {
+      if (responseObject.errorCode !== 0) {
+        resposta.innerHTML += "Desconectado";
+      }
+    }
+  
+    // Função executada quando a variável (tópico) no servidor receber uma mensagem:
+    function MensagemRecebida(message) {
+        resposta.innerHTML += "<br><br>" + message.payloadString;
+    }
+  
+    function Enviar()
+    {
+      texto = mensagem.value;
+  
+      message = new Paho.MQTT.Message(texto);
+      message.destinationName = topico;
+      client.send(message);
+    }
+  </script>
 </html>
