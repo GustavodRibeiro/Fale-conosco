@@ -22,11 +22,12 @@
                     <legend>ENTRAR</legend>
                     E-mail:
                     <br>
-                    <input type="text" class="caixa_larga" id="e-mail" name="email">
+                    <input type="text" class="caixa_larga" id="e-mail" name="email" onkeyup="ValidacaoEmail();">
                     <br> <br>
                     Senha:
                     <br>
-                    <input type="password" class="caixa_larga" id="senha" name="senha">
+                    <input type="password" class="caixa_larga" id="senha" name="senha" onkeyup="ValidacaoSenha();">
+                    <div id="erro" class="aviso" style="display:none;">A senha esta incorreta</div>
                 </fieldset>
                 <div class="escrita">
                     Não possui conta?
@@ -40,4 +41,7 @@
         </div>
     </div>
 </body>
+
+<script src="java_entrar.js"></script>
+
 </html>
